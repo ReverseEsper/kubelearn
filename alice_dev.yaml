@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alice2
+  labels:
+    app: mynginx
+    tier: development
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mynginx
+      tier: development
+  template:
+    metadata:
+      labels:
+        app: mynginx
+        tier: development
+    spec:
+      containers:
+      - name: alice2
+        image: "darevee/ningx"
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        ports:
+        - containerPort: 80
+      - name: alice22
+        image: "ubuntu"
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        command: [ "/bin/bash", "-c", "--" ]
+        args: [ "while true; do sleep 30; done;" ]

@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alice
+  labels:
+    app: mynginx
+    tier: production
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: mynginx
+      tier: production
+  template:
+    metadata:
+      labels:
+        app: mynginx
+        tier: production
+    spec:
+      volumes:
+      - name: html
+        persistentVolumeClaim:
+          claimName: html-claim
+      - name: alice-config
+        configMap:
+          name: alice-config
+      containers:
+      - name: alice
+        image: "darevee/ningx"
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - mountPath: /usr/share/nginx/html
+          name: html
+        - mountPath: /etc/nginx/conf.d/tokens.conf
+          name: alice-config
+          subPath: tokens.conf
+      - name: ubunter
+        image: "ubuntu"
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        volumeMounts:
+        - mountPath: /html
+          name: html
+        command: [ "/bin/bash", "-c", "--" ]
+        args: [ "while true; do sleep 5;date >> /html/index.html; done;" ]

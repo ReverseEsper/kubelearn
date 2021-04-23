@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: alice-config
+data:
+  tokens.conf: |-
+    server_tokens off;
